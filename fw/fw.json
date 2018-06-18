@@ -1,0 +1,66 @@
+{
+  "builders": [
+  {
+    "type": "virtualbox-ovf",
+    "source_path": "/home/etudiant/Téléchargements/DebianStretchPacker.ova",
+    "ssh_username": "root",
+    "ssh_password": "vitrygtr",
+    "vm_name": "fw",
+    "keep_registered": "True",
+    "skip_export": "True",
+    "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+
+    "vboxmanage": [
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--nic2",
+        "intnet"
+      ],
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--intnet2",
+        "vSwitch1"
+      ]
+    ],
+    "vboxmanage_post": [
+      [
+        "controlvm",
+        "{{.Name}}",
+        "nic1",
+        "bridged",
+        "eth2"
+      ]
+    ]
+  }],
+   "provisioners": [
+ {
+   "type": "shell",
+    "inline": [
+      "sleep 5",
+      "sudo apt-get update",
+      "sudo apt-get install -y tcpdump"
+    ]
+  },
+  {
+    "type": "file",
+    "source": "fw/interfaces",
+    "destination": "/etc/network/interfaces"
+  },
+  {
+    "type": "file",
+    "source": "fw/fw.sh",
+    "destination": "/root/fw.sh"
+  },
+ {
+    "type": "shell",
+    "inline": "echo fw > /etc/hostname"
+  },
+{
+    "type": "shell",
+    "inline": "sed -E -i.SAVE 's/^#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf"
+  }
+
+]
+}

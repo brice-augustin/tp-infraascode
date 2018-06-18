@@ -1,0 +1,43 @@
+{
+  "builders": [
+  {
+    "type": "virtualbox-ovf",
+    "source_path": "/home/etudiant/Téléchargements/DebianStretchPacker.ova",
+    "ssh_username": "root",
+    "ssh_password": "vitrygtr",
+    "vm_name": "log",
+    "keep_registered": "True",
+    "skip_export": "True",
+    "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+    "vboxmanage_post": [
+      [
+        "controlvm",
+        "{{.Name}}",
+        "nic1",
+        "intnet",
+        "vSwitch3"
+      ]
+    ]
+  }],
+
+  "provisioners": [
+  {
+    "type": "shell",
+    "inline": [
+      "sleep 5",
+      "sudo apt-get update",
+      "sudo apt-get install -y beep"
+    ]
+  },
+  {
+    "type": "file",
+    "source": "log/interfaces",
+    "destination": "/etc/network/interfaces"
+  },
+  {
+    "type": "file",
+    "source": "log/log.sh",
+    "destination": "/root/log.sh"
+  }
+]
+}

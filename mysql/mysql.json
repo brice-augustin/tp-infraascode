@@ -1,0 +1,63 @@
+{
+ "builders": [
+ {
+  "type": "virtualbox-ovf",
+  "source_path": "/home/etudiant/Téléchargements/DebianStretchPacker.ova",
+  "ssh_username": "root",
+  "ssh_password": "vitrygtr",
+  "vm_name": "mysql",
+  "keep_registered": "True",
+  "skip_export": "True",
+  "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+  "vboxmanage_post": [
+
+    [
+     "controlvm",
+     "{{.Name}}",
+     "nic1",
+     "intnet",
+     "vSwitch3"
+    ]
+  ]
+  }],
+ 
+  "provisioners": [
+  {
+    "type": "shell",
+    "inline": [
+      "sleep 5",
+      "echo mysql > /etc/hostname"
+    ]
+  },
+  {
+    "type": "shell",
+    "inline": [
+      "sudo apt-get update",
+      "sudo apt-get install -y mysql-server"
+    ]
+  },
+  { 
+    "type": "file",
+    "source": "mysql/interfaces",
+    "destination": "/etc/network/interfaces"
+  },
+  {
+    "type": "shell",
+    "inline": "sed -E -i.SAVE 's/^bind-address/#bind-address/' /etc/mysql/mariadb.conf.d/50-server.cnf"
+  },
+ {
+    "type": "file",
+    "source": "mysql/app.sql",
+    "destination": "/root/app.sql"
+  },
+{
+    "type": "shell",
+    "inline": [
+      "mysql -u root < /root/app.sql"
+    ]
+  }
+]
+}      
+    
+
+

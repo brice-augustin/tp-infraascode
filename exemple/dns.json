@@ -1,0 +1,71 @@
+{
+  "builders": [
+  {
+    "type": "virtualbox-ovf",
+    "source_path": "/home/etudiant/Base.ova",
+    "ssh_username": "root",
+    "ssh_password": "delichoc",
+    "vm_name": "DNS-GAU-FR-1",
+    "keep_registered": "True",
+    "skip_export": "True",
+    "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+    "vboxmanage": [
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--nic2",
+        "intnet"
+      ],
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--intnet2",
+        "vSwitch42"
+      ]
+    ],
+    "vboxmanage_post": [
+      [
+        "controlvm",
+        "{{.Name}}",
+        "nic1",
+        "bridged",
+        "eth0"
+      ]
+    ]
+  }],
+
+  "provisioners": [
+  {
+    "type": "shell",
+    "inline": [
+      "sleep 5",
+      "sudo apt-get update",
+      "sudo apt-get install -y bind9"
+    ]
+  },
+  {
+    "type": "file",
+    "source": "db.root",
+    "destination": "/etc/bind9/db.root"
+  },
+  {
+    "type": "file",
+    "source": "db.gau.fr",
+    "destination": "/etc/bind9/db.gau.fr"
+  },
+  {
+    "type": "file",
+    "source": "named.conf.local",
+    "destination": "/etc/bind9/named.conf.local"
+  },
+  {
+    "type": "file",
+    "source": "named.conf.options",
+    "destination": "/etc/bind9/named.conf.options"
+  },
+  {
+    "type": "shell",
+    "script": "install.sh"
+  }
+]
+}

@@ -1,0 +1,39 @@
+{
+  "builders": [
+  {
+    "type": "virtualbox-ovf",
+    "source_path": "/home/etudiant/Téléchargements/DebianStretchPacker.ova/",
+    "ssh_username": "root",
+    "ssh_password": "vitrygtr",
+    "vm_name": "www2",
+    "keep_registered": "True",
+    "skip_export": "True",
+    "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+    "vboxmanage": [
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--nic2",
+        "intnet"
+      ],
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--intnet2",
+        "vSwitch"
+]
+      ],
+     "vboxmanage_post": [
+      [
+        "controlvm",
+        "{{.Name}}",
+        "nic2",
+        "intnet",
+        "vSwitch2"
+      ]
+
+]
+}],
+"provisioners": []
+}
+

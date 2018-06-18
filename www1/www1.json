@@ -1,0 +1,67 @@
+{
+  "builders": [
+  {
+    "type": "virtualbox-ovf",
+    "source_path": "/home/etudiant/Téléchargements/DebianStretchPacker.ova/",
+    "ssh_username": "root",
+    "ssh_password": "vitrygtr",
+    "vm_name": "www1",
+    "keep_registered": "True",
+    "skip_export": "True",
+    "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+    "vboxmanage": [
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--nic2",
+        "intnet"
+      ],
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--intnet2",
+        "vSwitch3"
+      ]
+      ],
+     "vboxmanage_post": [ 	
+      [
+        "controlvm",
+        "{{.Name}}",
+        "nic1",
+        "intnet",
+        "vSwitch2"
+      ]
+
+]
+}],
+
+  "provisioners": [
+  {
+    "type": "shell",
+    "inline": [
+      "sleep 5",
+      "sudo apt-get update",
+      "sudo apt-get install -y apache2 php7.0 libapache2-mod-php7.0 php7.0-mysql"
+    ]
+  },
+  {
+    "type": "file",
+    "source": "www1/interfaces",
+    "destination": "/etc/network/interfaces"
+  },
+  {
+    "type": "file",
+    "source": "www1/index.php",
+    "destination": "/var/www/html/index.php"
+  },
+
+  {
+    "type": "shell",
+    "inline": [ 
+    "echo www1  > /etc/hostname"
+]
+  }
+
+]
+}
+

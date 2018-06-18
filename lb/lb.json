@@ -1,0 +1,65 @@
+{
+  "builders": [
+  {
+    "type": "virtualbox-ovf",
+    "source_path": "/home/etudiant/Téléchargements/DebianStretchPacker.ova",
+    "ssh_username": "root",
+    "ssh_password": "vitrygtr",
+    "vm_name": "lb",
+    "keep_registered": "True",
+    "skip_export": "True",
+    "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+    "vboxmanage": [
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--nic2",
+        "intnet"
+      ],
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--intnet2",
+        "vSwitch2"
+      ]
+    ],
+    "vboxmanage_post": [
+      [
+        "controlvm",
+        "{{.Name}}",
+        "nic1",
+        "intnet",
+        "vSwitch1"
+      ]
+    ]
+  }],
+
+  "provisioners": [
+   {
+    "type": "shell",
+    "inline": [
+      "sleep 5",
+      "sudo apt-get update",
+      "sudo apt-get install -y haproxy"
+    ]
+  },
+  {
+    "type": "shell",
+    "inline": [
+      "sleep 5",
+      "echo lb > /etc/hostname"
+    ]
+  },
+  {
+    "type": "file",
+    "source": "lb/interfaces",
+    "destination": "/etc/network/interfaces"
+  },
+  {
+    "type": "file",
+    "source": "lb/haproxy.cfg",
+    "destination": "/etc/haproxy/haproxy.cfg"
+  }
+]
+}
+      
