@@ -14,9 +14,9 @@ un firewall, un load balancer, deux serveurs Web, une base de données et un ser
   - Serveur SSH installé, SSH avec le login root autorisé (`PermitRootLogin yes` dans `/etc/ssh/sshd_config`)
   - OVA version 2.0
 
-*Si nécessaire, éditer les fichiers de conf Packer et changer le `source_path` de tous les éléments.*
-
 ## Lancement
+
+*Si nécessaire, éditer les fichiers de conf Packer et changer le `source_path` de tous les éléments.*
 
 Lancer la construction de l'infra :
 
