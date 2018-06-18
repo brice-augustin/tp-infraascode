@@ -18,6 +18,8 @@ un firewall, un load balancer, deux serveurs Web, une base de données et un ser
 
 *Si nécessaire, éditer les fichiers de conf Packer et changer le `source_path` de tous les éléments.*
 
+*Modifier également le nom de la carte réseau dans la section `vboxmanage_post`*
+
 Lancer la construction de l'infra :
 
 `./start.sh`
