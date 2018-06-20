@@ -4,7 +4,7 @@ while true
 do
 	ping -c 1 -w 2 192.0.2.3 > /dev/null
 
-if [ $? -eq 0 ]
+	if [ $? -eq 0 ]
 	then
 		echo -n "."
 	else
@@ -12,5 +12,5 @@ if [ $? -eq 0 ]
 		beep
 	fi
 
-sleep 10
+	sleep 10
 done
